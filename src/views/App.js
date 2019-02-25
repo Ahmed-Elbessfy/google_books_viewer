@@ -1,7 +1,11 @@
 import React from 'react';
+import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
+import { PoseGroup } from 'react-pose';
+import shortid from 'shortid';
+import AnimationContainer from '../common/AnimationContainer';
 import './app.css';
 
-export default function App() {
+function App({ location, history }) {
   return (
     <>
       <header>
@@ -13,7 +17,18 @@ export default function App() {
         </nav>
       </header>
       <div className="container">
+        <PoseGroup>
+          <AnimationContainer key={shortid.generate()}>
+            <Switch location={location}>
+              <Route path="/home" component={() => <h1>Home</h1>} />
+              <Route path="/favorites" component={() => <h1>favorites</h1>} />
+              <Redirect to="/home" />
+            </Switch>
+          </AnimationContainer>
+        </PoseGroup>
       </div>
     </>
   );
 }
+
+export default withRouter(App);
