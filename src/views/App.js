@@ -11,7 +11,7 @@ function App({ location, history }) {
       <header>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
           <a className="navbar-brand" href="#!">
-          <img src="https://nckenya.com/wp-content/uploads/books.png" alt="books App"/>
+          <img src="/images/books.png" alt="books App"/>
             The Books Bank
           </a>
         </nav>
