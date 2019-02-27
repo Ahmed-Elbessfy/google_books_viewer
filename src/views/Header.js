@@ -10,14 +10,15 @@ export default function Header({ location, history, initQuery }) {
   // the search input element ref
   const searchInput = React.useRef(null);
 
+  // get the init_query value based on location.pathname
+  // to be param OR initQuery OR ''
+  const [ _ , path, param] = location.pathname.split('/');
+  const init_query = (path == 'books')? param || initQuery : '';
   // get the query and setQuery state and
-  // give the quey the initial value from the location.pathname
-  const [ query, setQuery ] = React.useState(location.pathname.split('/')[2] || initQuery);
+  const [ query, setQuery ] = React.useState(init_query);
 
   // setQuery when location pathname changes
-  React.useEffect(() => {
-    setQuery(location.pathname.split('/')[2] || '');
-  }, [location.pathname]);
+  React.useEffect( () => void setQuery(init_query), [location.pathname] );
 
   // subscribe to the input event of searchInput ref using rxjs
   React.useEffect(
@@ -48,7 +49,7 @@ export default function Header({ location, history, initQuery }) {
         <form className="form-inline flex-b-60 flex-center" onSubmit={e => e.preventDefault()}>
           <input className="form-control form-control-lg mr-sm-2 flex-b-60"
             type="search"
-            placeholder="Search"
+            placeholder="Search Books"
             aria-label="Search"
             ref={searchInput}
             value={query}

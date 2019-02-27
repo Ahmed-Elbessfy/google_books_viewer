@@ -3,7 +3,10 @@ import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { PoseGroup } from 'react-pose';
 import shortid from 'shortid';
 import AnimationContainer from '../common/AnimationContainer';
-import Header from './Header'
+import Header from './Header';
+import Books from './Books';
+import Book from './Book';
+import Favorites from './Favorites';
 import './app.css';
 
 const INIT_QUERY = 'birds';
@@ -16,9 +19,9 @@ function App({ location, history }) {
         <PoseGroup>
           <AnimationContainer key={shortid.generate()}>
             <Switch location={location}>
-              <Route path="/books/:query" component={() => <h1>Books query</h1>} />
-              <Route path="/book/:id" component={() => <h1>Book details</h1>} />
-              <Route path="/favorites" component={() => <h1>favorites Books</h1>} />
+              <Route path="/books/:query" component={Books} />
+              <Route path="/book/:id" component={Book} />
+              <Route path="/favorites" component={Favorites} />
               <Redirect to={`/books/${INIT_QUERY}`} />
             </Switch>
           </AnimationContainer>
