@@ -96,7 +96,7 @@
 /* #endregion */
 
 /* #region custom styles */
-.navbar-brand img {
+.navbar-brand img.app-logo {
   width: 2rem;
   margin-right: 0.7rem;
 }
