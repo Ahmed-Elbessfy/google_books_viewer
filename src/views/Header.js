@@ -41,21 +41,21 @@ export default function Header({ location, history, initQuery }) {
 
   return (
     <header>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark flex-between">
-        <Link className="navbar-brand text-light" to="/">
+      <nav className="row justify-content-center navbar navbar-expand-lg navbar-dark bg-dark">
+        <Link className="navbar-brand text-light text-center col-lg-4 col-md-5 col-sm-12" to="/">
           <img className="app-logo" src="/images/books.png" alt="books App"/>
           The Books Bank
         </Link>
-        <form className="form-inline flex-b-60 flex-center" onSubmit={e => e.preventDefault()}>
-          <input className="form-control form-control-lg mr-sm-2 flex-b-60"
+        <div className="col-lg-4 col-md-6 col-sm-12">
+          <input className="form-control form-control-lg w-100"
             type="search"
-            placeholder="Search Books"
+            placeholder="Find your favorite books here ..."
             aria-label="Search"
             ref={searchInput}
             value={query}
             onChange={ e => setQuery(e.target.value) } />
-        </form>
-        <ul className="navbar-nav">
+        </div>
+        <ul className="navbar-nav col-lg-4 col-md-12 flex-center">
           <li className={`nav-item ${activeLink('/books')}`}>
             <NavLink className="nav-link" to={`/books/${initQuery}`}>Home</NavLink>
           </li>

@@ -96,8 +96,21 @@
 /* #endregion */
 
 /* #region custom styles */
+header {
+  position: fixed;
+  width: 100vw;
+  z-index: 999;
+}
 .navbar-brand img.app-logo {
   width: 2rem;
   margin-right: 0.7rem;
+}
+main {
+  position: relative;
+  top: 5rem;
+}
+main > div.spinner-border {
+  width: 5rem;
+  height: 5rem;
 }
 /* #endregion */
