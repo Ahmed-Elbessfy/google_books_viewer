@@ -91,5 +91,6 @@ export const bookMapper = (book) => ({
   thumb: book.volumeInfo.imageLinks.smallThumbnail,
   thumbnail: book.volumeInfo.imageLinks.thumbnail,
   previewUrl: book.volumeInfo.previewLink,
-  infoUrl: book.volumeInfo.infoLink
+  infoUrl: book.volumeInfo.infoLink,
+  isFavorite: false
 })
