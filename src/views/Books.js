@@ -1,39 +1,25 @@
 import React from 'react';
-import { useFetch } from '../common/helpers';
+import { useFetch, bookMapper } from '../common/helpers';
 import Loading from '../common/Loading';
 
-const truncate = (text) => (text && text.length > 100)? text.slice(0,98)+'...' : text;
-
 export default function Books({ match }) {
+  // get the query param from match route
   const query = match.params.query;
+  // build the API request to google books API endpoint
   const req = ['get', `https://www.googleapis.com/books/v1/volumes?printType=books&maxResults=30&q=${query}`];
+  // fetch API data
   let { loading, error, data: { items } } = useFetch({ req, key: query });
-
+  // hold the mapped books
   const [books , setBooks] = React.useState([]);
+  // when API data comes then map each book with bookMapper
   React.useEffect( () => {
-    if(items && items.length) {
-      setBooks(items.map( book => ({
-        bookId: book.id,
-        title: book.volumeInfo.title,
-        subtitle: book.volumeInfo.subtitle,
-        authors: book.volumeInfo.authors,
-        publisher: book.volumeInfo.publisher,
-        publishedDate: book.volumeInfo.publishedDate,
-        description: truncate(book.volumeInfo.description),
-        pageCount: book.volumeInfo.pageCount,
-        rating: book.volumeInfo.averageRating,
-        language: book.volumeInfo.language,
-        thumb: book.volumeInfo.imageLinks.smallThumbnail,
-        thumbnail: book.volumeInfo.imageLinks.thumbnail,
-        previewUrl: book.volumeInfo.previewLink,
-        infoUrl: book.volumeInfo.infoLink
-      }) ))
-    }
+    if(items && items.length)
+      setBooks(items.map(bookMapper));
   }, [items] )
-
+  // show the Loading spinner when data pending
   if (loading)
     return <Loading />
-
+  // show the books OR error
   return (
     <main className="row justify-content-between">
       {(error)

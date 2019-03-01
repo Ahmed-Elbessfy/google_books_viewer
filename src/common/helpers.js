@@ -52,6 +52,8 @@ async function getData(req, key, timeout, setState) {
   }
 }
 
+export const truncate = (text) => (text && text.length > 100)? text.slice(0,98)+'...' : text;
+
 // timestamp units by milliseconds
 export const timestamp = {
   year: 31536000000,  // 365 days
@@ -74,3 +76,20 @@ export function useFetch({ key, req, timeout = timestamp.month, deps = [] }) {
   }, deps);
   return state;
 }
+
+export const bookMapper = (book) => ({
+  bookId: book.id,
+  title: book.volumeInfo.title,
+  subtitle: book.volumeInfo.subtitle,
+  authors: book.volumeInfo.authors,
+  publisher: book.volumeInfo.publisher,
+  publishedDate: book.volumeInfo.publishedDate,
+  description: truncate(book.volumeInfo.description),
+  pageCount: book.volumeInfo.pageCount,
+  rating: book.volumeInfo.averageRating,
+  language: book.volumeInfo.language,
+  thumb: book.volumeInfo.imageLinks.smallThumbnail,
+  thumbnail: book.volumeInfo.imageLinks.thumbnail,
+  previewUrl: book.volumeInfo.previewLink,
+  infoUrl: book.volumeInfo.infoLink
+})

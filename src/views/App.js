@@ -7,6 +7,7 @@ import Header from './Header';
 import Books from './Books';
 import Book from './Book';
 import Favorites from './Favorites';
+import AdvancedSearch from './AdvancedSearch';
 import './app.css';
 
 const INIT_QUERY = 'birds';
@@ -22,6 +23,7 @@ function App({ location, history }) {
               <Route path="/books/:query" component={Books} />
               <Route path="/book/:id" component={Book} />
               <Route path="/favorites" component={Favorites} />
+              <Route path="/advanced-search" component={AdvancedSearch} />
               <Redirect to={`/books/${INIT_QUERY}`} />
             </Switch>
           </AnimationContainer>

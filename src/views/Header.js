@@ -42,11 +42,11 @@ export default function Header({ location, history, initQuery }) {
   return (
     <header>
       <nav className="row justify-content-center navbar navbar-expand-lg navbar-dark bg-dark">
-        <Link className="navbar-brand text-light text-center col-lg-4 col-md-5 col-sm-12" to="/">
+        <Link className="navbar-brand text-light text-center col-lg-3 col-md-5 col-sm-12" to="/">
           <img className="app-logo" src="/images/books.png" alt="books App"/>
           The Books Bank
         </Link>
-        <div className="col-lg-4 col-md-6 col-sm-12">
+        <div className="col-lg-5 col-md-6 col-sm-12">
           <input className="form-control form-control-lg w-100"
             type="search"
             placeholder="Find your favorite books here ..."
@@ -61,6 +61,9 @@ export default function Header({ location, history, initQuery }) {
           </li>
           <li className={`nav-item ${activeLink('/favorites')}`}>
             <NavLink className="nav-link" to="/favorites">Favorites</NavLink>
+          </li>
+          <li className={`nav-item ${activeLink('/advanced-search')}`}>
+            <NavLink className="nav-link" to="/advanced-search">Advanced Search</NavLink>
           </li>
         </ul>
       </nav>

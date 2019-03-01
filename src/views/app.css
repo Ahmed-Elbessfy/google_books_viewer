@@ -113,4 +113,7 @@ main > div.spinner-border {
   width: 5rem;
   height: 5rem;
 }
+div.card:hover {
+  box-shadow: 0 0 3rem #ccc;
+}
 /* #endregion */
