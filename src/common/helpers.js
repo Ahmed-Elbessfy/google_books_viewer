@@ -77,7 +77,7 @@ export function useFetch({ key, req, timeout = timestamp.month, deps = [] }) {
   return state;
 }
 
-export const bookMapper = (book) => ({
+export const bookMapper = (query) => (book) => ({
   bookId: book.id,
   title: book.volumeInfo.title,
   subtitle: book.volumeInfo.subtitle,
@@ -88,9 +88,18 @@ export const bookMapper = (book) => ({
   pageCount: book.volumeInfo.pageCount,
   rating: book.volumeInfo.averageRating,
   language: book.volumeInfo.language,
-  thumb: book.volumeInfo.imageLinks.smallThumbnail,
-  thumbnail: book.volumeInfo.imageLinks.thumbnail,
+  thumb: (book.volumeInfo.imageLinks)? book.volumeInfo.imageLinks.smallThumbnail : '',
+  thumbnail: (book.volumeInfo.imageLinks)? book.volumeInfo.imageLinks.thumbnail : '',
   previewUrl: book.volumeInfo.previewLink,
   infoUrl: book.volumeInfo.infoLink,
-  isFavorite: false
+  isFavorite: false,
+  query: query
 })
+
+export const addToLookup = (query) => {
+  let lookup = LS.get('lookup');
+  if (!lookup)
+    LS.set('lookup', [query]);
+  else if (!lookup.includes(query))
+    LS.set('lookup', [...lookup, query]);
+}

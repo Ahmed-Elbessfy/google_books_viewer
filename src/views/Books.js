@@ -1,5 +1,5 @@
 import React from 'react';
-import { useFetch, bookMapper } from '../common/helpers';
+import { useFetch, bookMapper, addToLookup } from '../common/helpers';
 import LS from '../common/localStorage';
 import Loading from '../common/Loading';
 
@@ -9,15 +9,19 @@ export default function Books({ match }) {
   // build the API request to google books API endpoint
   const req = ['get', `https://www.googleapis.com/books/v1/volumes?printType=books&maxResults=30&q=${query}`];
   // fetch API data
-  let { loading, error, data: { items } } = useFetch({ req, key: query });
+  let { loading, error, data: { items } } = useFetch({ req, key: 'raw_' + query });
   // hold the mapped books
   const [books , setBooks] = React.useState([]);
-  // when API data comes then map each book with bookMapper
+  // when API books comes then:
+  // add the query keyword to the LS lookup
+  // map each book with bookMapper and set books state
   React.useEffect( () => {
-    if(items && items.length)
-      setBooks(items.map(bookMapper));
+    if(items && items.length) {
+      addToLookup(query);
+      setBooks(items.map(bookMapper(query)));
+    }
   }, [items] );
-  // set the book isFavorite
+  // set the book isFavorite and change books state
   const setFavorite = ({ target }) => {
     setBooks(books.map(book =>
       (book.bookId === target.id)
@@ -25,10 +29,8 @@ export default function Books({ match }) {
         : book
     ));
   };
-  // when books changed get all favorites and save them to LS
-  React.useEffect(
-    () => void LS.set('favorite_books', { [query]: books.filter(book => book.isFavorite ) } )
-  , [books]);
+  // when books changed save them to LS
+  React.useEffect(() => void LS.set(query, books), [books]);
   // show the Loading spinner when data pending
   if (loading)
     return <Loading />
