@@ -17,32 +17,43 @@ async function request(req) {
 }
 
 async function getData(req, key, timeout, setState) {
+  // setState to the loading state
   setState({
     loading: true,
     error: '',
     data: {}
   });
-  let data = LS.get(key);
+  // try get data from local storage
+  let data = LS.get(`raw_${key}`);
+  // if there is stored data then check its timestamp
+  // if its timestamp in the given timeout
+  // then get the mapped data OR the raw_data
   if(data && (Date.now() - data.timestamp) < timeout ) {
-    delete data.timestamp;
     setState({
       loading: false,
       error: '',
-      data: data
+      data: LS.get(key) || data
     });
   }
   else {
+    // if there isn't stored data then request data from API
     data = await request(req);
+    // if the typeof data = 'string' then there is an error
     if(typeof data === 'string')
       setState({
         loading: false,
         error: data,
         data: {}
       });
+    // if the type of any [array - object] then the data was fulfilled
     else {
+      // and the timestamp to data
       data.timestamp = Date.now();
-      LS.set(key, JSON.stringify(data));
+      // store it in [raw_[key]] key in local storage
+      LS.set(`raw_${key}`, JSON.stringify(data));
+      // delete the timestamp from data
       delete data.timestamp;
+      // setState with the requested raw data
       setState({
         loading: false,
         error: '',

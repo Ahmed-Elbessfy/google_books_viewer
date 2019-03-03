@@ -9,18 +9,20 @@ export default function Books({ match }) {
   // build the API request to google books API endpoint
   const req = ['get', `https://www.googleapis.com/books/v1/volumes?printType=books&maxResults=30&q=${query}`];
   // fetch API data
-  let { loading, error, data: { items } } = useFetch({ req, key: 'raw_' + query });
+  let { loading, error, data } = useFetch({ req, key: query });
   // hold the mapped books
   const [books , setBooks] = React.useState([]);
   // when API books comes then:
   // add the query keyword to the LS lookup
   // map each book with bookMapper and set books state
   React.useEffect( () => {
-    if(items && items.length) {
+    if(data.items && data.items.length) {
       addToLookup(query);
-      setBooks(items.map(bookMapper(query)));
+      setBooks(data.items.map(bookMapper(query)));
+    } else if (data.length) {
+      setBooks(data);
     }
-  }, [items] );
+  }, [data] );
   // set the book isFavorite and change books state
   const setFavorite = ({ target }) => {
     setBooks(books.map(book =>
