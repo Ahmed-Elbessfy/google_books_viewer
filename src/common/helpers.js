@@ -16,23 +16,23 @@ async function request(req) {
   }
 }
 
-async function getData(req, key, timeout, setState) {
+async function getData(req, key, timeout, setState, map) {
   // setState to the loading state
   setState({
     loading: true,
     error: '',
-    data: {}
+    data: []
   });
   // try get data from local storage
   let data = LS.get(`raw_${key}`);
   // if there is stored data then check its timestamp
-  // if its timestamp in the given timeout
-  // then get the mapped data OR the raw_data
+  // if the timestamp in the given timeout
+  // then get the mapped data OR map the raw_data with givin map function
   if(data && (Date.now() - data.timestamp) < timeout ) {
     setState({
       loading: false,
       error: '',
-      data: LS.get(key) || data
+      data: LS.get(key) || map(data, key)
     });
   }
   else {
@@ -43,7 +43,7 @@ async function getData(req, key, timeout, setState) {
       setState({
         loading: false,
         error: data,
-        data: {}
+        data: []
       });
     // if the type of any [array - object] then the data was fulfilled
     else {
@@ -51,13 +51,15 @@ async function getData(req, key, timeout, setState) {
       data.timestamp = Date.now();
       // store it in [raw_[key]] key in local storage
       LS.set(`raw_${key}`, JSON.stringify(data));
+      // add the query keyword to the LS lookup
+      addToLookup(key);
       // delete the timestamp from data
       delete data.timestamp;
       // setState with the requested raw data
       setState({
         loading: false,
         error: '',
-        data: data
+        data: map(data, key)
       });
     }
   }
@@ -76,19 +78,19 @@ export const timestamp = {
   second: 1000
 };
 
-export function useFetch({ key, req, timeout = timestamp.month, deps = [] }) {
+export function useFetch({ key, req, timeout = timestamp.month, deps = [], map = v => v }) {
   const [state, setState] = useState({
     loading: true,
     error: '',
-    data: {}
+    data: []
   });
   useEffect( () => {
-    getData(req, key, timeout, setState);
+    getData(req, key, timeout, setState, map);
   }, deps);
   return state;
 }
 
-export const bookMapper = (query) => (book) => ({
+const mapBook = (query) => (book) => ({
   bookId: book.id,
   title: book.volumeInfo.title,
   subtitle: book.volumeInfo.subtitle,
@@ -106,6 +108,8 @@ export const bookMapper = (query) => (book) => ({
   isFavorite: false,
   query: query
 })
+
+export const bookMapper = (data, query) => data.items.map(mapBook(query));
 
 export const addToLookup = (query) => {
   let lookup = LS.get('lookup');
