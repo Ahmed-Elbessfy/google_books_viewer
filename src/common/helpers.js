@@ -16,51 +16,34 @@ async function request(req) {
   }
 }
 
-async function getData(req, key, timeout, setState, map) {
+async function getData(req, key, pageCount, timeout, setState, map) {
   // setState to the loading state
-  setState({
-    loading: true,
-    error: '',
-    data: []
-  });
+  setState({ loading: true, error: '', data: [], isFetching: true });
   // try get data from local storage
-  let data = LS.get(`raw_${key}`);
+  let data = LS.get(`raw_${key}_${pageCount}`);
   // if there is stored data then check its timestamp
   // if the timestamp in the given timeout
   // then get the mapped data OR map the raw_data with givin map function
-  if(data && (Date.now() - data.timestamp) < timeout ) {
-    setState({
-      loading: false,
-      error: '',
-      data: LS.get(key) || map(data, key)
-    });
-  }
+  if(data && (Date.now() - data.timestamp) < timeout )
+    setState({ loading: false, error: '', data: LS.get(key) || map(data, `${key}_${pageCount}`), isFetching: false });
   else {
     // if there isn't stored data then request data from API
     data = await request(req);
     // if the typeof data = 'string' then there is an error
     if(typeof data === 'string')
-      setState({
-        loading: false,
-        error: data,
-        data: []
-      });
+      setState({ loading: false, error: data, data: [], isFetching: false });
     // if the type of any [array - object] then the data was fulfilled
     else {
       // and the timestamp to data
       data.timestamp = Date.now();
       // store it in [raw_[key]] key in local storage
-      LS.set(`raw_${key}`, JSON.stringify(data));
+      LS.set(`raw_${key}_${pageCount}`, JSON.stringify(data));
       // add the query keyword to the LS lookup
       addToLookup(key);
       // delete the timestamp from data
       delete data.timestamp;
       // setState with the requested raw data
-      setState({
-        loading: false,
-        error: '',
-        data: map(data, key)
-      });
+      setState({ loading: false, error: '', data: map(data, `${key}_${pageCount}`), isFetching: false });
     }
   }
 }
@@ -79,13 +62,9 @@ export const timestamp = {
 };
 
 export function useFetch({ key, req, timeout = timestamp.month, deps = [], map = v => v }) {
-  const [state, setState] = useState({
-    loading: true,
-    error: '',
-    data: []
-  });
+  const [state, setState] = useState({ loading: true, error: '', data: [], isFetching: false });
   useEffect( () => {
-    getData(req, key, timeout, setState, map);
+    getData(req, key, 1, timeout, setState, map);
   }, deps);
   return state;
 }
@@ -117,4 +96,34 @@ export const addToLookup = (query) => {
     LS.set('lookup', [query]);
   else if (!lookup.includes(query))
     LS.set('lookup', [...lookup, query]);
+}
+
+// build the API request to google books API endpoint
+export const buildRequest = (query, start, pageSize) => ['get', `https://www.googleapis.com/books/v1/volumes?printType=books&maxResults=${pageSize}&startIndex=${start}&q=${query}`];
+
+let start = 0, pageCount = 2;
+export function useInfiniteScroll({ key, pageSize, timeout = timestamp.month, map = v => v }) {
+  // hold the data state
+  // isFetching is a boolean flag to user reach the end of the page
+  const [state, setState] = useState({ loading: true, error: '', data: [], isFetching: false });
+  // scroll handler which setIsFetching to true when user reach the end of the page
+  const handleScroll = () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight)
+      setState({ loading: true, error: '', data: [], isFetching: true });
+  }
+  // bind the scroll handler to the scroll event when component mounted
+  // and remove the scroll handler before component unmounted
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+  // when setIsFetching is true then call the cb function
+  useEffect(() => {
+    if (state.isFetching) {
+      start += pageSize;
+      getData(buildRequest(key,start,pageSize), key, pageCount++, timeout, setState, map);
+    }
+  }, [state.isFetching]);
+  // return the isFetching state
+  return state;
 }
