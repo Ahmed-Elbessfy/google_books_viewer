@@ -25,7 +25,7 @@ async function getData(req, key, pageCount, timeout, setState, map) {
   // if the timestamp in the given timeout
   // then get the mapped data OR map the raw_data with givin map function
   if(data && (Date.now() - data.timestamp) < timeout )
-    setState({ loading: false, error: '', data: LS.get(key) || map(data, `${key}_${pageCount}`), isFetching: false });
+    setState({ loading: false, error: '', data: LS.get(`${key}_${pageCount}`) || map(data, `${key}_${pageCount}`), isFetching: false });
   else {
     // if there isn't stored data then request data from API
     data = await request(req);
@@ -39,7 +39,7 @@ async function getData(req, key, pageCount, timeout, setState, map) {
       // store it in [raw_[key]] key in local storage
       LS.set(`raw_${key}_${pageCount}`, JSON.stringify(data));
       // add the query keyword to the LS lookup
-      addToLookup(key);
+      addToLookup(`${key}_${pageCount}`);
       // delete the timestamp from data
       delete data.timestamp;
       // setState with the requested raw data

@@ -4,8 +4,8 @@ import { buildRequest, useFetch, bookMapper, useInfiniteScroll } from '../common
 import Loading from '../common/Loading';
 import BookList from '../views/BookList';
 
-const PAGE_SIZE = 30;
-
+const PAGE_SIZE = 12;
+let lookups, tempBooks = [];
 export default function Books({ match }) {
   // get the query param from match route
   const query = match.params.query;
@@ -15,11 +15,35 @@ export default function Books({ match }) {
   let { isFetching, data: pagingData } = useInfiniteScroll({ key: query, pageSize: PAGE_SIZE, map: bookMapper });
   // hold the mapped books
   const [books , setBooks] = React.useState([]);
+  // hold the page counter
+  const [pageCount , setPageCount] = React.useState(0);
   // when API data fulfilled then set books state
-  React.useEffect( () => setBooks(data), [data.length] );
-  React.useEffect( () => setBooks([...books, ...pagingData]), [pagingData.length] );
+  React.useEffect( () => {
+    if (data.length) {
+      setBooks(data);
+      setPageCount(pageCount+1);
+    }
+  }, [data.length] );
+  React.useEffect( () => {
+    if (pagingData.length) {
+      setBooks([...books, ...pagingData]);
+      setPageCount(pageCount+1);
+    }
+  }, [pagingData.length] );
   // when books changed [setFavorite] save changes to LS
-  React.useEffect(() => void LS.set(query, books), [books]);
+  // by looping through lookups keys [query_pageCount]
+  // and set the books that belongs to [query_pageCount] 
+  // only if books exists in the books state
+  React.useEffect(() => {
+    if (books.length) {
+      lookups = LS.get('lookup');
+      lookups.forEach(key => {
+        tempBooks = books.filter(book => book.query === key);
+        if(tempBooks.length)
+          LS.set(key, tempBooks);
+      });
+    }
+  }, [books]);
   // set the book isFavorite and change books state
   const setFavorite = ({ target }) => {
     setBooks(books.map(book =>
