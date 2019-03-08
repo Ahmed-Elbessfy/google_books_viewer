@@ -5,7 +5,8 @@ import Loading from '../common/Loading';
 import BookList from '../views/BookList';
 
 const PAGE_SIZE = 12;
-let lookups, tempBooks = [];
+let lookups = [], tempBooks = [];
+
 export default function Books({ match }) {
   // get the query param from match route
   const query = match.params.query;
@@ -17,7 +18,8 @@ export default function Books({ match }) {
   const [books , setBooks] = React.useState([]);
   // hold the page counter
   const [pageCount , setPageCount] = React.useState(0);
-  // when API data fulfilled then set books state
+  // when API data either from [initial data] OR [pagingData] are fulfilled
+  // then set books state and increment pageCount
   React.useEffect( () => {
     if (data.length) {
       setBooks(data);
@@ -30,9 +32,9 @@ export default function Books({ match }) {
       setPageCount(pageCount+1);
     }
   }, [pagingData.length] );
-  // when books changed [setFavorite] save changes to LS
+  // when books changed [favorite toggled] save changes to LS
   // by looping through lookups keys [query_pageCount]
-  // and set the books that belongs to [query_pageCount] 
+  // and set the books that belongs to [query_pageCount]
   // only if books exists in the books state
   React.useEffect(() => {
     if (books.length) {
@@ -44,8 +46,8 @@ export default function Books({ match }) {
       });
     }
   }, [books]);
-  // set the book isFavorite and change books state
-  const setFavorite = ({ target }) => {
+  // toggle the book isFavorite and change books state
+  const toggleFavorite = ({ target }) => {
     setBooks(books.map(book =>
       (book.bookId === target.id)
         ? ({...book, isFavorite: !book.isFavorite})
@@ -60,7 +62,7 @@ export default function Books({ match }) {
     <main className="row justify-content-between">
       {(error)
         ? <div className="alert alert-danger w-100 text-center" role="alert">{error}</div>
-        : <BookList books={books} setFavorite={setFavorite} />
+        : <BookList books={books} toggleFavorite={toggleFavorite} />
       }
       {(isFetching)
         ? <div className="alert alert-warning w-100 text-center" role="alert">Fetching more list items...</div>

@@ -21,6 +21,10 @@
   justify-content: space-around;
   align-items: center;
 }
+.flex-around-top {
+  display: flex;
+  justify-content: space-around;
+}
 .flex-b-25 {
   flex-basis: 25%;
 }

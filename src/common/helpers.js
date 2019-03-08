@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import LS from './localStorage'
 
+// get the API request and send it to the server
+// and return the fulfilled data OR error
 async function request(req) {
   const [ method, url, body = null ] = req;
   try {
@@ -15,7 +17,9 @@ async function request(req) {
     return error.message;
   }
 }
-
+// managing offline first data fetching
+// if the needed data not exists then request it from API
+// when it fulfilled then save it on LS with [query_page] as the key
 async function getData(req, key, pageCount, timeout, setState, map) {
   // setState to the loading state
   setState({ loading: true, error: '', data: [], isFetching: true });
@@ -47,9 +51,8 @@ async function getData(req, key, pageCount, timeout, setState, map) {
     }
   }
 }
-
-export const truncate = (text) => (text && text.length > 100)? text.slice(0,98)+'...' : text;
-
+// truncate any string larger than 100 characters
+export const truncate = (text, length) => (text && text.length > length)? text.slice(0,length-3)+'...' : text;
 // timestamp units by milliseconds
 export const timestamp = {
   year: 31536000000,  // 365 days
@@ -60,7 +63,7 @@ export const timestamp = {
   minute: 60000,
   second: 1000
 };
-
+// add data fetching feature to any component
 export function useFetch({ key, req, timeout = timestamp.month, deps = [], map = v => v }) {
   const [state, setState] = useState({ loading: true, error: '', data: [], isFetching: false });
   useEffect( () => {
@@ -68,15 +71,15 @@ export function useFetch({ key, req, timeout = timestamp.month, deps = [], map =
   }, deps);
   return state;
 }
-
+// the map book
 const mapBook = (query) => (book) => ({
   bookId: book.id,
   title: book.volumeInfo.title,
   subtitle: book.volumeInfo.subtitle,
-  authors: book.volumeInfo.authors,
+  authors: book.volumeInfo.authors? book.volumeInfo.authors.join(', '): '',
   publisher: book.volumeInfo.publisher,
   publishedDate: book.volumeInfo.publishedDate,
-  description: truncate(book.volumeInfo.description),
+  description: book.volumeInfo.description,
   pageCount: book.volumeInfo.pageCount,
   rating: book.volumeInfo.averageRating,
   language: book.volumeInfo.language,
@@ -84,12 +87,17 @@ const mapBook = (query) => (book) => ({
   thumbnail: (book.volumeInfo.imageLinks)? book.volumeInfo.imageLinks.thumbnail : '',
   previewUrl: book.volumeInfo.previewLink,
   infoUrl: book.volumeInfo.infoLink,
+  country: book.accessInfo.country,
+  pdfLink: book.accessInfo.pdf.downloadLink,
+  webReaderLink: book.accessInfo.webReaderLink,
+  buyLink: book.saleInfo.buyLink,
+  selfLink: book.selfLink,
   isFavorite: false,
   query: query
 })
-
+// map the fetched books [get only the props that UI needs]
 export const bookMapper = (data, query) => data.items.map(mapBook(query));
-
+// fill in the lookup LS key with each query page
 export const addToLookup = (query) => {
   let lookup = LS.get('lookup');
   if (!lookup)
@@ -97,10 +105,9 @@ export const addToLookup = (query) => {
   else if (!lookup.includes(query))
     LS.set('lookup', [...lookup, query]);
 }
-
 // build the API request to google books API endpoint
 export const buildRequest = (query, start, pageSize) => ['get', `https://www.googleapis.com/books/v1/volumes?printType=books&maxResults=${pageSize}&startIndex=${start}&q=${query}`];
-
+// add infinite scroll feature to any component
 let start = 0, pageCount = 2;
 export function useInfiniteScroll({ key, pageSize, timeout = timestamp.month, map = v => v }) {
   // hold the data state
