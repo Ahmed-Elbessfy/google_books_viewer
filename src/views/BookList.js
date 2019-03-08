@@ -4,7 +4,7 @@ import { truncate } from '../common/helpers'
 
 let bookLink = {};
 
-export default function BookList({ books, toggleFavorite }) {
+export default function BookList({ books, favoriteHandler }) {
   return books.map(book => {
     bookLink = { pathname: `/book/${book.bookId}`, state: book };
     return (
@@ -14,8 +14,9 @@ export default function BookList({ books, toggleFavorite }) {
             <h5 className="card-title">
               <Link className="text-light" to={bookLink}>{truncate(book.title, 15)}</Link>
             </h5>
-            <i id={book.bookId} className={`${(book.isFavorite)? 'fas': 'far'} fa-star`}
-              onClick={toggleFavorite} />
+            <i id={book.bookId} query={book.query}
+              className={`${(book.isFavorite)? 'fas': 'far'} fa-star`}
+              onClick={favoriteHandler} />
           </div>
           <Link to={bookLink}>
             <img src={book.thumb} className="card-img-top" alt={book.title} />

@@ -62,7 +62,7 @@ export default function Books({ match }) {
     <main className="row justify-content-between">
       {(error)
         ? <div className="alert alert-danger w-100 text-center" role="alert">{error}</div>
-        : <BookList books={books} toggleFavorite={toggleFavorite} />
+        : <BookList books={books} favoriteHandler={toggleFavorite} />
       }
       {(isFetching)
         ? <div className="alert alert-warning w-100 text-center" role="alert">Fetching more list items...</div>
