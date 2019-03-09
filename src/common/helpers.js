@@ -134,3 +134,22 @@ export function useInfiniteScroll({ key, pageSize, timeout = timestamp.month, ma
   // return the isFetching state
   return state;
 }
+// add form state to any component
+export function useForm(form) {
+  const [state, setState] = useState(form);
+  const changeHandler = ({ target }) => {
+    setState({
+      ...state,
+      [target.name]: target.value
+    });
+  };
+  const submitHandler = (cb) => (e) => {
+    e.preventDefault();
+    cb(state);
+  }
+  return {
+    state,
+    changeHandler,
+    submitHandler
+  }
+}

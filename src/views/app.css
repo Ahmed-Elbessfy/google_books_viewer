@@ -158,6 +158,10 @@ div.card .fa-star {
 .card-title {
   margin: 0 !important;
 }
+.form-check-input,
+.form-check-label {
+  cursor: pointer;
+}
 /* #endregion */
 
 /* #region media query */
