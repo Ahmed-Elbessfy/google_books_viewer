@@ -18,17 +18,19 @@ export default function AdvancedSearch({ history }) {
   const search = (values) => {
     // get the form fields
     const { title, author, publisher, subject, isbn, downloadFormat, filter, printType } = values;
+    // clear the prev search params
+    searchParams = '';
     // build the search params string
     if(title)
       searchParams += `q=intitle:${values.title}`;
     if(author)
-      searchParams += `+inauthor:${author}`;
+      searchParams += (searchParams)? `+inauthor:${author}` : `q=inauthor:${author}`;
     if(publisher)
-      searchParams += `+inpublisher:${publisher}`;
+      searchParams += (searchParams)? `+inpublisher:${publisher}` : `q=inpublisher:${publisher}`;
     if(subject)
-      searchParams += `+subject:${subject}`;
+      searchParams += (searchParams)? `+subject:${subject}` : `q=subject:${subject}`;
     if(isbn)
-      searchParams += `+isbn:${isbn}`;
+      searchParams += (searchParams)? `+isbn:${isbn}` : `q=isbn:${isbn}`;
     if(downloadFormat)
       searchParams += `&download=${downloadFormat}`;
     if(filter)
