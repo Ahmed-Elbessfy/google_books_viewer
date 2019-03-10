@@ -10,7 +10,7 @@ async function request(req) {
     const { data } = await axios[method](url, body);
     if (data.error)
       return data.error;
-    if(!data)
+    if(!data || !data.totalItems)
       return 'Not found!';
     return data;
   } catch(error) {
@@ -106,7 +106,11 @@ export const addToLookup = (query) => {
     LS.set('lookup', [...lookup, query]);
 }
 // build the API request to google books API endpoint
-export const buildRequest = (query, start, pageSize) => ['get', `https://www.googleapis.com/books/v1/volumes?printType=books&maxResults=${pageSize}&startIndex=${start}&q=${query}`];
+export const buildRequest = ({ query = '', search = '', start, pageSize }) => {
+  if(query)
+    return ['get', `https://www.googleapis.com/books/v1/volumes?printType=books&maxResults=${pageSize}&startIndex=${start}&q=${query}`];
+  return ['get', `https://www.googleapis.com/books/v1/volumes?maxResults=${pageSize}&startIndex=${start}&${search}`]
+}
 // add infinite scroll feature to any component
 let start = 0, pageCount = 2;
 export function useInfiniteScroll({ key, pageSize, timeout = timestamp.month, map = v => v }) {

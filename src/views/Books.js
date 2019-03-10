@@ -4,16 +4,16 @@ import { buildRequest, useFetch, bookMapper, useInfiniteScroll } from '../common
 import Loading from '../common/Loading';
 import BookList from '../views/BookList';
 
-const PAGE_SIZE = 12;
+const pageSize = 12;
 let lookups = [], tempBooks = [];
 
 export default function Books({ match }) {
   // get the query param from match route
   const query = match.params.query;
   // fetch API data
-  let { loading, error, data } = useFetch({ req: buildRequest(query, 0, PAGE_SIZE), key: query, map: bookMapper });
+  let { loading, error, data } = useFetch({ req: buildRequest({ query, start: 0, pageSize }), key: query, map: bookMapper });
   // get the paging data
-  let { isFetching, data: pagingData } = useInfiniteScroll({ key: query, pageSize: PAGE_SIZE, map: bookMapper });
+  let { isFetching, data: pagingData } = useInfiniteScroll({ key: query, pageSize, map: bookMapper });
   // hold the mapped books
   const [books , setBooks] = React.useState([]);
   // hold the page counter
@@ -64,10 +64,7 @@ export default function Books({ match }) {
         ? <div className="alert alert-danger w-100 text-center" role="alert">{error}</div>
         : <BookList books={books} favoriteHandler={toggleFavorite} />
       }
-      {(isFetching)
-        ? <div className="alert alert-warning w-100 text-center" role="alert">Fetching more list items...</div>
-        : null
-      }
+      {(isFetching)? <Loading /> : null}
     </main>
   );
 }

@@ -8,6 +8,7 @@ import Books from './Books';
 import Book from './Book';
 import Favorites from './Favorites';
 import AdvancedSearch from './AdvancedSearch';
+import SearchResult from './SearchResult';
 import './app.css';
 
 const INIT_QUERY = 'birds';
@@ -24,6 +25,7 @@ function App({ location, history }) {
               <Route path="/book/:id" component={Book} />
               <Route path="/favorites" component={Favorites} />
               <Route path="/advanced-search" component={AdvancedSearch} />
+              <Route path="/search-result/:search" component={SearchResult} />
               <Redirect to={`/books/${INIT_QUERY}`} />
             </Switch>
           </AnimationContainer>

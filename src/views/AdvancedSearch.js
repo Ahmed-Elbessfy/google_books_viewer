@@ -3,7 +3,7 @@ import { useForm } from '../common/helpers'
 
 let searchParams = '';
 
-export default function AdvancedSearch() {
+export default function AdvancedSearch({ history }) {
   const { state, changeHandler, submitHandler } = useForm({
     'title': '',
     'author': '',
@@ -16,10 +16,11 @@ export default function AdvancedSearch() {
   });
 
   const search = (values) => {
-    console.log(values);
+    // get the form fields
     const { title, author, publisher, subject, isbn, downloadFormat, filter, printType } = values;
+    // build the search params string
     if(title)
-      searchParams += `?q=intitle:${values.title}`;
+      searchParams += `q=intitle:${values.title}`;
     if(author)
       searchParams += `+inauthor:${author}`;
     if(publisher)
@@ -34,7 +35,8 @@ export default function AdvancedSearch() {
       searchParams += `&filter=${filter}`;
     if(printType)
       searchParams += `&printType=${printType}`;
-    console.log(searchParams);
+    // go to search-result with this search params to fetch and display the result
+    history.push(`/search-result/${searchParams}`);
   }
 
   return (
