@@ -2,6 +2,7 @@ import React from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import { fromEvent } from 'rxjs'
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators'
+import booksLogo from '../books.png'
 
 // set the active nav class based on current location
 const activeLink = (match) => window.location.href.includes(match)? 'active' : '';
@@ -43,7 +44,7 @@ export default function Header({ location, history, initQuery }) {
     <header>
       <nav className="row justify-content-center navbar navbar-expand-lg navbar-dark bg-dark">
         <Link className="navbar-brand text-light text-center col-lg-3 col-md-5 col-sm-12" to="/">
-          <img className="app-logo" src="%PUBLIC_URL%/images/books.png" alt="books App"/>
+          <img className="app-logo" src={booksLogo} alt="books App"/>
           The Books Bank
         </Link>
         <div className="col-lg-5 col-md-6 col-sm-12">
