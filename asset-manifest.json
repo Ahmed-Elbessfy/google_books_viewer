@@ -1,0 +1,13 @@
+{
+  "main.css": "/google_books_viewer/static/css/main.2bc6d6fb.chunk.css",
+  "main.js": "/google_books_viewer/static/js/main.0a8d9247.chunk.js",
+  "main.js.map": "/google_books_viewer/static/js/main.0a8d9247.chunk.js.map",
+  "runtime~main.js": "/google_books_viewer/static/js/runtime~main.a7e6d0c4.js",
+  "runtime~main.js.map": "/google_books_viewer/static/js/runtime~main.a7e6d0c4.js.map",
+  "static/js/2.01a68c81.chunk.js": "/google_books_viewer/static/js/2.01a68c81.chunk.js",
+  "static/js/2.01a68c81.chunk.js.map": "/google_books_viewer/static/js/2.01a68c81.chunk.js.map",
+  "index.html": "/google_books_viewer/index.html",
+  "precache-manifest.b6437f37490d51092dbec0bebe1d2f6a.js": "/google_books_viewer/precache-manifest.b6437f37490d51092dbec0bebe1d2f6a.js",
+  "service-worker.js": "/google_books_viewer/service-worker.js",
+  "static/css/main.2bc6d6fb.chunk.css.map": "/google_books_viewer/static/css/main.2bc6d6fb.chunk.css.map"
+}
