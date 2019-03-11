@@ -33,7 +33,7 @@ export default function Favorites({ match }) {
     LS.set(book.query, tempBooks);
   };
   // if favorite books doesn't exists show not found
-  if (!books)
+  if (!books.length)
     return (
       <main>
         <div className="alert alert-warning w-100 text-center" role="alert">Favorite Books Not Found ...</div>
