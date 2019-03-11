@@ -15,7 +15,7 @@ export default function SearchResult({ match }) {
     <main className="row justify-content-center">
       {(error)
         ? <div className="alert alert-danger w-100 text-center" role="alert">{error}</div>
-        : <BookList books={data} favoriteHandler={v => v} />
+        : <BookList books={data} favoriteHandler={null} />
       }
     </main>
   )

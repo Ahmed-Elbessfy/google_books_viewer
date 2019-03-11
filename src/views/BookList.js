@@ -14,9 +14,12 @@ export default function BookList({ books, favoriteHandler }) {
             <h5 className="card-title">
               <Link className="text-light" to={bookLink}>{truncate(book.title, 15)}</Link>
             </h5>
-            <i id={book.bookId} query={book.query}
-              className={`${(book.isFavorite)? 'fas': 'far'} fa-star`}
-              onClick={favoriteHandler} />
+            { favoriteHandler
+              ? <i id={book.bookId} query={book.query}
+                  className={`${(book.isFavorite)? 'fas': 'far'} fa-star`}
+                  onClick={favoriteHandler} />
+              : null
+            }
           </div>
           <Link to={bookLink}>
             <img src={book.thumb} className="card-img-top" alt={book.title} />
