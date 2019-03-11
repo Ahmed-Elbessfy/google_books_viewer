@@ -59,12 +59,14 @@ export default function Books({ match }) {
     return <Loading />
   // show the books OR error
   return (
-    <main className="row justify-content-between">
-      {(error)
-        ? <div className="alert alert-danger w-100 text-center" role="alert">{error}</div>
-        : <BookList books={books} favoriteHandler={toggleFavorite} />
-      }
-      {(isFetching)? <Loading /> : null}
-    </main>
+    <>
+      <main className="row justify-content-between">
+        {(error)
+          ? <div className="alert alert-danger w-100 text-center" role="alert">{error}</div>
+          : <BookList books={books} favoriteHandler={toggleFavorite} />
+        }
+      </main>
+      { isFetching && <Loading /> }
+    </>
   );
 }

@@ -132,7 +132,7 @@ export function useInfiniteScroll({ key, pageSize, timeout = timestamp.month, ma
   useEffect(() => {
     if (state.isFetching) {
       start += pageSize;
-      getData(buildRequest(key,start,pageSize), key, pageCount++, timeout, setState, map);
+      getData(buildRequest({ query: key, start, pageSize }), key, pageCount++, timeout, setState, map);
     }
   }, [state.isFetching]);
   // return the isFetching state
