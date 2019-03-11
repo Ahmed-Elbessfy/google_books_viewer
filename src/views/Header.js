@@ -43,7 +43,7 @@ export default function Header({ location, history, initQuery }) {
     <header>
       <nav className="row justify-content-center navbar navbar-expand-lg navbar-dark bg-dark">
         <Link className="navbar-brand text-light text-center col-lg-3 col-md-5 col-sm-12" to="/">
-          <img className="app-logo" src="/images/books.png" alt="books App"/>
+          <img className="app-logo" src="%PUBLIC_URL%/images/books.png" alt="books App"/>
           The Books Bank
         </Link>
         <div className="col-lg-5 col-md-6 col-sm-12">
